@@ -136,7 +136,9 @@ function getElevations() {
         for (var j = current_samples; j < current_samples + samplesPerDay[i] - 1; j++) {
             data.addRow([' ', elevationPath[j], cur_color, undefined]);
         }
-        data.addRow([' ', elevationPath[current_samples + samplesPerDay[i]], cur_color, 'Day ' + (i + 2).toString()]);
+        if(i != pathDistance.length - 1){
+            data.addRow([' ', elevationPath[current_samples + samplesPerDay[i]], cur_color, 'Day ' + (i + 2).toString()]);
+        }
         current_samples += samplesPerDay[i];
     }
     
