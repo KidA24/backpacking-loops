@@ -83,12 +83,20 @@ function highline() {
     drawPath(flatTopDayOne);
     calcTotalDistance(flatTopDayOne);
     dayNumber += 1;
+    drawPath(flatTopDayTwoOptional);
+    calcTotalDistance(flatTopDayTwoOptional);
+    dayNumber += 1;
     drawPath(flatTopDayTwo);
     calcTotalDistance(flatTopDayTwo);
-    dayNumber += 1;
+	dayNumber += 1;
     drawPath(flatTopDayThree);
     calcTotalDistance(flatTopDayThree);
-
+	dayNumber += 1;
+    drawPath(flatTopDayFour);
+    calcTotalDistance(flatTopDayFour);
+	dayNumber += 1;
+    drawPath(flatTopDayFive);
+    calcTotalDistance(flatTopDayFive);
     // Draw the map lines
     drawPolyline();
 
