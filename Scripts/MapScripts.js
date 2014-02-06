@@ -26,24 +26,40 @@ var metersToFeet = 3.28083989501312;
 function togglevisible(id) {
     switch (id) {
         case 'GlacierNP':
-            $('.GlacierNP-sub').toggle();
+            //$('.GlacierNP-sub').toggle();
             return;
         case 'RMNP':
             $('.RockyMtn').toggle();
             return;
         case 'Wisconsin':
-            $('.Wisco').toggle();
+            //$('.Wisco').toggle();
             return;
         case '6plus':
-            $('plus6').toggle();
+            //$('plus6').toggle();
             return;
         case '3to5':
-            $('5to3').toggle();
+            //$('5to3').toggle();
             return;
         case '1or2':
-            $('2or1').toggle();
+            //$('2or1').toggle();
             return;
     }
+}
+
+//handles the navigation of the actual links
+function openNavigationLink(id) {
+    $('#maps').append(id);
+    switch (id) {
+        case 'flattopMtn':
+            flatTopMountainWest();
+            return;
+        case 'numbertwo':
+            chart.clearChart();
+            return;
+    }
+}
+
+function comingSoon() {
 }
 
 function clearData() {
@@ -61,7 +77,6 @@ function clearData() {
         trailPath.pop();
     };
 
-
     // Create an ElevationService.
     elevator = new google.maps.ElevationService();
     data = null;
@@ -76,7 +91,7 @@ function clearData() {
     console.log('data cleared');
 }
 
-function highline() {
+function flatTopMountainWest() {
     // Reset Data and path the currently selected data
     clearData();
     dayNumber = 0;
@@ -144,9 +159,7 @@ function getElevations() {
         for (var j = current_samples; j < current_samples + samplesPerDay[i] - 1; j++) {
             data.addRow([' ', elevationPath[j], cur_color, undefined]);
         }
-        if(i != pathDistance.length - 1){
-            data.addRow([' ', elevationPath[current_samples + samplesPerDay[i]], cur_color, 'Day ' + (i + 2).toString()]);
-        }
+        data.addRow([' ', elevationPath[current_samples + samplesPerDay[i]], cur_color, 'Day ' + (i + 2).toString()]);
         current_samples += samplesPerDay[i];
     }
     
@@ -232,19 +245,6 @@ function getDistanceFromLatLonInMi(lat1, lon1, lat2, lon2) {
 
 function deg2rad(deg) {
     return deg * (Math.PI / 180)
-}
-
-//handles the navigation of the actual links
-function openNavigationLink(id) {
-    $('#maps').append(id);
-    switch (id) {
-        case 'highline':
-            highline();
-            return;
-        case 'numbertwo':
-            chart.clearChart();
-            return;
-    }
 }
 
 function getid(selectedItem) {
