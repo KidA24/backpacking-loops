@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CF3A626D-46F5-4CCC-AD3D-6B9A93B1838C}"
+	ProjectSection(SolutionItems) = preProject
+		index.html = index.html
+		packages.config = packages.config
+		README.md = README.md
+		StyleSheet1.css = StyleSheet1.css
+		Web.config = Web.config
+		Web.Debug.config = Web.Debug.config
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{8715A67B-B74C-47AE-B3E3-BDA7447118EB}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\jquery-2.0.3-vsdoc.js = Scripts\jquery-2.0.3-vsdoc.js
+		Scripts\jquery-2.0.3.intellisense.js = Scripts\jquery-2.0.3.intellisense.js
+		Scripts\jquery-2.0.3.js = Scripts\jquery-2.0.3.js
+		Scripts\jquery-2.0.3.min.js = Scripts\jquery-2.0.3.min.js
+		Scripts\jquery-2.0.3.min.map = Scripts\jquery-2.0.3.min.map
+		Scripts\MapScripts.js = Scripts\MapScripts.js
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HTML", "HTML", "{23292AFC-8A46-41F1-8663-E682B5C06ACB}"
+	ProjectSection(SolutionItems) = preProject
+		HTML\About.html = HTML\About.html
+		HTML\LeftColumn.html = HTML\LeftColumn.html
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RMNP", "RMNP", "{ABC81B62-669A-402E-8E66-A7E602861542}"
+	ProjectSection(SolutionItems) = preProject
+		HTML\RMNP\RMNPGPS.js = HTML\RMNP\RMNPGPS.js
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8715A67B-B74C-47AE-B3E3-BDA7447118EB} = {CF3A626D-46F5-4CCC-AD3D-6B9A93B1838C}
+		{23292AFC-8A46-41F1-8663-E682B5C06ACB} = {CF3A626D-46F5-4CCC-AD3D-6B9A93B1838C}
+		{ABC81B62-669A-402E-8E66-A7E602861542} = {23292AFC-8A46-41F1-8663-E682B5C06ACB}
+	EndGlobalSection
+EndGlobal
