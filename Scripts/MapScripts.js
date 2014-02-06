@@ -146,12 +146,17 @@ function getElevations() {
         totalSamples += samplesPerDay[i];
     }
     //make 500 point elevation path request with the full trail path and save it to elevationPath global variable
-    var pathReq = {
-        'path': fullPath,
-        'samples': totalSamples
+
+    for (var i = 0; i < pathDistance.length; i++) {
+        var pathReq = {
+            'path': trailPath[i],
+            'samples': samplesPerDay[i]
+        }
+        elevator.getElevationAlongPath(pathReq, elevationResults);
     }
+    
     console.log(totalSamples);
-    elevator.getElevationAlongPath(pathReq, elevationResults);
+    
     //Now input that data. 
     var current_samples = 0;
     for (var i = 0; i < pathDistance.length; i++) {
@@ -277,7 +282,7 @@ function initialize() {
     //add the legend
     map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('legend'));
 
-    highline();
+    flatTopMountainWest();
 }
 
 function calcTotalDistance(path) {
@@ -313,7 +318,6 @@ function drawPolyline() {
 }
 
 $(document).ready(function () {
-    $('#rightcolumn').load('HTML/About.html');
     $('#leftcolumn').load('HTML/LeftColumn.html');
     $(document).on('click', '.GlacierNP-sub', navigation);
     $(document).on('click', '.topdropdown', function (e) {
