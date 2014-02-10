@@ -71,7 +71,7 @@ function clearData() {
     trailPath.length = 0;
     polyline.length = 0;
     elevationPath.length = 0;
-
+    $('#writtencontent').empty();
     // Create an ElevationService.
     elevator = new google.maps.ElevationService();
     data = null;
