@@ -49,20 +49,18 @@ header {
     z-index:5;
 }
 
-#disclaimer {
-    font-size: 60%;
-}
-
 li, ul { cursor: default;
 }
 
 #elevation_chart {
     height: 250px;
     width: 500px;
+    float: left;
 }
 #maps {
     height: 500px;
     width: 500px;
+    float: left;
 }
 img { max-width: none; }
 
@@ -71,13 +69,18 @@ img { max-width: none; }
     color: #DCDCDC;
     display:inline-block;
     width: 724px;
-	height:96%;
+	height:99%;
     margin-left: 4px;
     margin-right: 4px;
     float: left;
     overflow: auto;
 }
-
+#writtencontent {
+    width: 200px;
+    padding: 4px 7px 2px 4px;
+    float: right;
+}
+/*
 footer {
 	position:absolute;
 	bottom:0;
@@ -88,4 +91,4 @@ footer {
     width: 969px;
     background-color:#003300;
     color: #DCDCDC;
-}
+} */

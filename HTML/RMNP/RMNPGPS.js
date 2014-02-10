@@ -1,4 +1,4 @@
-﻿var flatTopDayOne = [new google.maps.LatLng(40.254219,-105.815392),
+﻿var flatTopDayOne = [new google.maps.LatLng(40.254219, -105.815392),
 new google.maps.LatLng(40.254768,-105.815628),
 new google.maps.LatLng(40.25605,-105.816063),
 new google.maps.LatLng(40.256325,-105.815987),
@@ -862,6 +862,33 @@ new google.maps.LatLng(40.256325,-105.815987),
 new google.maps.LatLng(40.25605,-105.816063),
 new google.maps.LatLng(40.255695,-105.815941)];
 
+var campSiteDownRight = {
+    path: 'M 0,0 25,15, M 35,5 45,25, 47,25 28,25, 30,25, 40,5, 37.5,10, 43,25, 41,25, 37.5,14, 32,25, 34,25, 37.5,14, 37.5,10,  35,5 z,',
+    scale: 1,
+    strokeColor: 'black',
+    strokeWeight: 2
+};
+
+var campSiteDownLeft = {
+    path: 'M 0,0, -25,15,  M -35,5 -45,25, -47,25 -28,25, -30,25, -40,5, -37.5,10, -43,25, -41,25, -37.5,14, -32,25, -34,25, -37.5,14, -37.5,10,  -35,5',
+    scale: 1,
+    strokeColor: 'black',
+    strokeWeight: 2
+};
+
+var campSiteUp = {
+    path: 'M 0,0, 0,-20, M 2.5,-50, -7.5,-30, -9.5,-30, 9.5,-30, 7.5,-30, -2.5,-50, 0,-45, -5.5,-30, -3.5,-30, 0,-41, 5.5,-30, 3.5,-30, 0,-41, 0,-45, -2.5,-50',
+    scale: 1,
+    strokeColor: 'black',
+    strokeWeight: 2
+};
+
+var campSiteDown = {
+    path: 'M 0,0, 0,-15,  M 2.5,5,  -7.5,25,  -9.5,25, 9.5,25, 7.5,25, -2.5,5, 0,10, -5.5,25, -3.5,25,  0,14, 5.5,25,  3.5,25,  0,14,  0,10, -2.5,5',
+    scale: 1,
+    strokeColor: 'black',
+    strokeWeight: 2
+}; 
 
 var flatTopMarkers = new Array();
 
@@ -871,6 +898,15 @@ flatTopMarkers.push(new google.maps.Marker({
 }));
 
 flatTopMarkers.push(new google.maps.Marker({
-    position: new google.maps.LatLng(40.276897,-105.719849),
-    title: "Pine Marten Campsite"
+    position: new google.maps.LatLng(40.276897, -105.719849),
+    icon: campSiteDownRight,
+    title: "Pine Marten Campsite\nNight One"
 }));
+
+flatTopMarkers.push(new google.maps.Marker({
+    position: new google.maps.LatLng(40.286762,-105.702644),
+    icon: campSiteUp,
+    title: "July Campsite\nNight Two"
+}));
+
+var flatTopContent = '<p>This will be my inaugaral hike into the backcountry in Rocky Mountain National Park, I am throughly excited. My current plan involves 5 days of hiking with optional short day hikes for the shorter trip days. However this trip could easily be shortened to 3 days for those weekend expiditioners.</p><b>Trip Overview: </b><br /><b>Day 1: </b>Get ye to the back country.<br /> <b>Day 2:</b> Optional day hike up to Lake Nanita, followed by a short backpack to the July Campsite. (note: Day 2 and Day 3 on the map would be combined in these cases) <br /><b>Day 3: </b>Up to summit Flattop Mountain bright and early, and then the long walk down to This Other Campsite.<br /><b>Day 4:</b> Wander the Meadows. You could easily skip the last night and head back to the car this day. <br><b>Day 5: </b> A short jaunt back to the car. Could also do another optional hike in the morning.';

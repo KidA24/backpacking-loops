@@ -17,6 +17,7 @@ data.addColumn({ type: 'string', role: 'style' });
 var testvar = 'initialize';
 var deferred1;
 var deferred2;
+
 //used to store the individual days/paths for the trip
 var trailPath = new Array([]);
 var pathDistance = new Array();
@@ -117,6 +118,8 @@ function flatTopMountainWest() {
     addLegendCanvas();
     drawLegend();
     getElevations();
+    $('#writtencontent').append(flatTopContent);
+    $('#writtencontent').css('padding', '4px');
 }
 
 //determines number of samples per path, and then deposits the results into an array of altitudes. 
@@ -282,6 +285,7 @@ function initialize() {
         center: new google.maps.LatLng(40.293275, -105.762661),
         mapTypeId: 'terrain'
     }
+
     map = new google.maps.Map(document.getElementById('maps'), mapOptions);
 
     // Create a new chart in the elevation_chart DIV.
