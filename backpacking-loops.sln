@@ -32,7 +32,34 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RMNP", "RMNP", "{ABC81B62-6
 		HTML\RMNP\RMNPGPS.js = HTML\RMNP\RMNPGPS.js
 	EndProjectSection
 EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "backpacking-loops", ".", "{FE89B991-288E-418B-AF1F-6F0E627EDA08}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
+		Debug.AspNetCompiler.VirtualPath = "/backpacking-loops"
+		Debug.AspNetCompiler.PhysicalPath = "..\backpacking-loops\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\backpacking-loops\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/backpacking-loops"
+		Release.AspNetCompiler.PhysicalPath = "..\backpacking-loops\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\backpacking-loops\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "50230"
+	EndProjectSection
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FE89B991-288E-418B-AF1F-6F0E627EDA08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE89B991-288E-418B-AF1F-6F0E627EDA08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection

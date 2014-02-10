@@ -1,4 +1,4 @@
-﻿/// <reference path="~/scripts/jquery-2.0.3.js" />
+﻿/// <reference path="~/Scripts/jquery-2.0.3.js" />
 
 
 // Create an ElevationService.
@@ -8,12 +8,15 @@ var chart;
 var infowindow = new google.maps.InfoWindow();
 var polyline = new Array();
 var dayNumber = 0;
+var def = new Array();
 var current_color = ['red', 'blue', 'orange', 'purple', 'yellow', 'black', 'green' ];
 var data = new google.visualization.DataTable();
 data.addColumn('string', 'Sample');
 data.addColumn('number', 'Elevation');
 data.addColumn({ type: 'string', role: 'style' });
 var testvar = 'initialize';
+var deferred1;
+var deferred2;
 //used to store the individual days/paths for the trip
 var trailPath = new Array([]);
 var pathDistance = new Array();
@@ -64,18 +67,9 @@ function comingSoon() {
 
 function clearData() {
     chart.clearChart();
-    
-    while(polyline.length > 0) {
-        if (polyline[0]) {
-            polyline[0].setMap(null);
-            polyline.splice(0, 1);
-            console.log(polyline.length);
-        }
-    };
-
-    while (trailPath.length > 0) {
-        trailPath.pop();
-    };
+    trailPath.length = 0;
+    polyline.length = 0;
+    elevationPath.length = 0;
 
     // Create an ElevationService.
     elevator = new google.maps.ElevationService();
@@ -86,9 +80,7 @@ function clearData() {
     data.addColumn({ type: 'string', role: 'style' });
     data.addColumn({ type: 'string', role: 'annotation' });
 
-   // pathDistance = 0;
     dayNumber = 0;
-    console.log('data cleared');
 }
 
 function flatTopMountainWest() {
@@ -138,37 +130,50 @@ function getElevations() {
         totalLength += pathDistance[i];
     }
     var samplesPerMile = 500 / totalLength;
-    var fullPath = new Array();
     //calculate the samples per day, as well as the entire path being used. 
     for (var i = 0; i < pathDistance.length; i++) {
         samplesPerDay[i] = Math.round(samplesPerMile * pathDistance[i]);
-        fullPath = fullPath.concat(trailPath[i]);
         totalSamples += samplesPerDay[i];
     }
-    //make 500 point elevation path request with the full trail path and save it to elevationPath global variable
 
+    //Deferreds are used to make sure the data is all returned before drawing the chart. 
+    deferred1 = $.Deferred();
+    deferred2 = $.Deferred();
+
+    //make individual path requests. 
     for (var i = 0; i < pathDistance.length; i++) {
         var pathReq = {
             'path': trailPath[i],
             'samples': samplesPerDay[i]
         }
-        elevator.getElevationAlongPath(pathReq, elevationResults);
+        def.push($.Deferred());
+        elevator.getElevationAlongPath(pathReq, elevationResults)
+        $.when(def[0]).done(function () { });
     }
-    
-    console.log(totalSamples);
-    
+      
     //Now input that data. 
     var current_samples = 0;
-    for (var i = 0; i < pathDistance.length; i++) {
-        var cur_color = current_color[i];
-        for (var j = current_samples; j < current_samples + samplesPerDay[i] - 1; j++) {
-            data.addRow([' ', elevationPath[j], cur_color, undefined]);
-        }
-        data.addRow([' ', elevationPath[current_samples + samplesPerDay[i]], cur_color, 'Day ' + (i + 2).toString()]);
-        current_samples += samplesPerDay[i];
-    }
-    
+
     //Draw the chart.
+    $.when(deferred1).done(function () {
+            console.log('elevationPath[0] is ' + elevationPath[0].toString());
+
+        for (var i = 0; i < pathDistance.length; i++) {
+            var cur_color = current_color[i];
+            for (var j = current_samples; j < current_samples + samplesPerDay[i] - 1; j++) {
+                data.addRow([' ', elevationPath[j], cur_color, undefined]);
+            }
+            data.addRow([' ', elevationPath[current_samples + samplesPerDay[i]], cur_color, 'Day ' + (i + 2).toString()]);
+            current_samples += samplesPerDay[i];
+            console.log('elevation starting ' + i + ' is ' + elevationPath[current_samples]);
+        }
+        deferred2.resolve();
+    });
+    
+    $.when(deferred2).done(drawElevationChart);
+}
+
+function drawElevationChart() {
     document.getElementById('elevation_chart').style.display = 'block';
     chart.draw(data, {
         height: 150,
@@ -186,8 +191,14 @@ function elevationResults(results, status) {
     for (var i = 0; i < results.length; i++) {
         elevationPath.push(elevations[i].elevation*metersToFeet);
     }
-    console.log('results length is ' + results.length);
-    console.log('elevationPath length is ' + elevationPath.length);
+    if (def[0]) {
+        def[0].resolve();
+        def.splice(0, 1);
+    }
+    if (!def[0]) {
+        deferred1.resolve();
+    }
+    return;
 }
 
 function drawLegend() {
@@ -216,10 +227,7 @@ function drawLegend() {
         legend_context.fillText(round.toFixed(2) + ' mi', 60, 27 + (i - 1) * spacing);
         legend_context.fillStyle = current_color[i - 1];
         legend_context.fillRect(40, 22 + (i - 1) * spacing, 17, 4);
-
     }
-        
-
 }
 
 function addLegendCanvas() {
@@ -270,8 +278,8 @@ function navigation() {
 
 function initialize() {
     var mapOptions = {
-        zoom: 11,
-        center: new google.maps.LatLng(40.257599,-105.800072),
+        zoom: 12,
+        center: new google.maps.LatLng(40.293275, -105.762661),
         mapTypeId: 'terrain'
     }
     map = new google.maps.Map(document.getElementById('maps'), mapOptions);
@@ -304,9 +312,6 @@ function drawPath(path) {
 
 function drawPolyline() {
     for (var i = 0; i <= dayNumber; i++) {
-
-        console.log('i equals ' + i);
-        console.log('trailPath Length equals ' + trailPath[i].length);
         polyline[i] = new google.maps.Polyline({
             path: trailPath[i],
             strokeColor: current_color[i],
@@ -319,6 +324,7 @@ function drawPolyline() {
 
 $(document).ready(function () {
     $('#leftcolumn').load('HTML/LeftColumn.html');
+    $(document).on('click', '.RockyMtn', navigation);
     $(document).on('click', '.GlacierNP-sub', navigation);
     $(document).on('click', '.topdropdown', function (e) {
         if ($(this).is($(e.target))) { topdropdown($(this)); };
