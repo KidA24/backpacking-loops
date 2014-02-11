@@ -17,7 +17,6 @@ data.addColumn({ type: 'string', role: 'style' });
 var testvar = 'initialize';
 var deferred1;
 var deferred2;
-
 //used to store the individual days/paths for the trip
 var trailPath = new Array([]);
 var pathDistance = new Array();
@@ -88,26 +87,14 @@ function flatTopMountainWest() {
     // Reset Data and path the currently selected data
     clearData();
     dayNumber = 0;
-    drawPath(flatTopDayOne);
-    calcTotalDistance(flatTopDayOne);
-    dayNumber += 1;
-    drawPath(flatTopDayTwoOptional);
-    calcTotalDistance(flatTopDayTwoOptional);
-    dayNumber += 1;
-    drawPath(flatTopDayTwo);
-    calcTotalDistance(flatTopDayTwo);
-	dayNumber += 1;
-    drawPath(flatTopDayThree);
-    calcTotalDistance(flatTopDayThree);
-	dayNumber += 1;
-    drawPath(flatTopDayFour);
-    calcTotalDistance(flatTopDayFour);
-	dayNumber += 1;
-    drawPath(flatTopDayFive);
-    calcTotalDistance(flatTopDayFive);
+    var pathArray = [flatTopDayOne, flatTopDayTwoOptional, flatTopDayTwo, flatTopDayThree, flatTopDayFour, flatTopDayFive];
+    /*TODO: Need to make sure these process sequentially, instead of in series. How to? */
+    //calculate the daily distance of the route:
+    calcTotalDistance(pathArray);
+    inputPath(pathArray);
+    dayNumber = 5;
     // Draw the map lines
     drawPolyline();
-
     //Add the Markers
     for (var i = 0; i < flatTopMarkers.length; i++) {
         flatTopMarkers[i].setMap(map);
@@ -179,7 +166,7 @@ function getElevations() {
 function drawElevationChart() {
     document.getElementById('elevation_chart').style.display = 'block';
     chart.draw(data, {
-        height: 150,
+        height: 200,
         legend: 'none',
         titleY: 'Elevation (ft)',
         annotations: { style: 'line', textStyle: { color: 'black' } }
@@ -297,20 +284,20 @@ function initialize() {
     flatTopMountainWest();
 }
 
+//takes in an array of path's, and then calculates the total distance of the path
 function calcTotalDistance(path) {
-    var fff = dayNumber;
-    pathDistance[dayNumber] = 0;
-    for (var i = 1; i < path.length; i++){
-        pathDistance[dayNumber] += getDistanceFromLatLonInMi(path[i - 1].lat(), path[i - 1].lng(), path[i].lat(), path[i].lng());
+    for (var j = 0; j < path.length; j++) {
+        pathDistance[j] = 0;
+        for (var i = 1; i < path[j].length; i++) {
+            pathDistance[j] += getDistanceFromLatLonInMi(path[j][i - 1].lat(), path[j][i - 1].lng(), path[j][i].lat(), path[j][i].lng());
+        }
+        console.log('Path distance is ' + pathDistance[j].toString());
     }
 }
 
-function drawPath(path) {
-    if (!trailPath[dayNumber]) {
-        trailPath[dayNumber] = [];
-    }
+function inputPath(path) {
     for (var i = 0; i < path.length; i++) {
-        trailPath[dayNumber].push(path[i]);
+        trailPath[i] = path[i];
     }
 }
 
