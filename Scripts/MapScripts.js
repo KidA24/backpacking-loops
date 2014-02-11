@@ -17,6 +17,7 @@ data.addColumn({ type: 'string', role: 'style' });
 var testvar = 'initialize';
 var deferred1;
 var deferred2;
+var deferredPaths;
 //used to store the individual days/paths for the trip
 var trailPath = new Array([]);
 var pathDistance = new Array();
@@ -87,14 +88,14 @@ function flatTopMountainWest() {
     // Reset Data and path the currently selected data
     clearData();
     dayNumber = 0;
-    var pathArray = [flatTopDayOne, flatTopDayTwoOptional, flatTopDayTwo, flatTopDayThree, flatTopDayFour, flatTopDayFive];
-    /*TODO: Need to make sure these process sequentially, instead of in series. How to? */
+    var pathArray = [flatTopDayOne, flatTopDayTwoOptional, flatTopDayTwo, flatTopDayThreeOpt2, flatTopDayFourOpt2];
     //calculate the daily distance of the route:
+    deferredPaths = $.Deferred();
     calcTotalDistance(pathArray);
     inputPath(pathArray);
-    dayNumber = 5;
+    dayNumber = 4;
     // Draw the map lines
-    drawPolyline();
+    $.when(deferred1).done(drawPolyline());
     //Add the Markers
     for (var i = 0; i < flatTopMarkers.length; i++) {
         flatTopMarkers[i].setMap(map);
@@ -129,33 +130,36 @@ function getElevations() {
     //Deferreds are used to make sure the data is all returned before drawing the chart. 
     deferred1 = $.Deferred();
     deferred2 = $.Deferred();
+    
 
     //make individual path requests. 
+    /*TODO: This is where the current issue is. 
+        Need to make sure these requests are finished in sequence*/
+
     for (var i = 0; i < pathDistance.length; i++) {
         var pathReq = {
             'path': trailPath[i],
             'samples': samplesPerDay[i]
         }
         def.push($.Deferred());
-        elevator.getElevationAlongPath(pathReq, elevationResults)
-        $.when(def[0]).done(function () { });
+        elevator.getElevationAlongPath(pathReq, elevationResults);
+
     }
       
     //Now input that data. 
     var current_samples = 0;
-
     //Draw the chart.
     $.when(deferred1).done(function () {
             console.log('elevationPath[0] is ' + elevationPath[0].toString());
 
         for (var i = 0; i < pathDistance.length; i++) {
             var cur_color = current_color[i];
+            console.log('elevation starting day ' + (i + 1) + ' is ' + elevationPath[current_samples]);
             for (var j = current_samples; j < current_samples + samplesPerDay[i] - 1; j++) {
                 data.addRow([' ', elevationPath[j], cur_color, undefined]);
             }
             data.addRow([' ', elevationPath[current_samples + samplesPerDay[i]], cur_color, 'Day ' + (i + 2).toString()]);
             current_samples += samplesPerDay[i];
-            console.log('elevation starting ' + i + ' is ' + elevationPath[current_samples]);
         }
         deferred2.resolve();
     });
@@ -178,6 +182,8 @@ function elevationResults(results, status) {
         return;
     }
     var elevations = results;
+    console.log('returned value 0 is ' + (elevations[0].elevation * metersToFeet));
+    
     for (var i = 0; i < results.length; i++) {
         elevationPath.push(elevations[i].elevation*metersToFeet);
     }
@@ -291,7 +297,6 @@ function calcTotalDistance(path) {
         for (var i = 1; i < path[j].length; i++) {
             pathDistance[j] += getDistanceFromLatLonInMi(path[j][i - 1].lat(), path[j][i - 1].lng(), path[j][i].lat(), path[j][i].lng());
         }
-        console.log('Path distance is ' + pathDistance[j].toString());
     }
 }
 
@@ -299,6 +304,7 @@ function inputPath(path) {
     for (var i = 0; i < path.length; i++) {
         trailPath[i] = path[i];
     }
+    deferredPaths.resolve();
 }
 
 function drawPolyline() {
