@@ -15,9 +15,10 @@ data.addColumn('string', 'Sample');
 data.addColumn('number', 'Elevation');
 data.addColumn({ type: 'string', role: 'style' });
 var testvar = 'initialize';
+var pathReq = [];
+var array_of_requests = [];
 var deferred1;
 var deferred2;
-var deferredPaths;
 //used to store the individual days/paths for the trip
 var trailPath = new Array([]);
 var pathDistance = new Array();
@@ -102,9 +103,8 @@ function flatTopMountainWest() {
     }
 
     //Add the Map Legend
-    $('#legend').css({ "height": "100px", "width": "100px", "background": "white" });
+    $('#legend').css({ "height": "100px", "width": "200px", "background": "white" });
     addLegendCanvas();
-    drawLegend();
     getElevations();
     $('#writtencontent').append(flatTopContent);
     $('#writtencontent').css('padding', '4px');
@@ -131,21 +131,20 @@ function getElevations() {
     deferred1 = $.Deferred();
     deferred2 = $.Deferred();
     
-
-    //make individual path requests. 
-    /*TODO: This is where the current issue is. 
-        Need to make sure these requests are finished in sequence*/
-
+    //sets up an array of requests to be made in order for the elevation chart
     for (var i = 0; i < pathDistance.length; i++) {
-        var pathReq = {
+        pathReq[i] = {
             'path': trailPath[i],
             'samples': samplesPerDay[i]
         }
-        def.push($.Deferred());
-        elevator.getElevationAlongPath(pathReq, elevationResults);
-
+        if (i > 0) {
+            var pr = pathReq[i];
+            array_of_requests.push(elevatorWrapper(pr, elevationResults));
+        }
     }
-      
+    var pr = pathReq[0];
+    elevator.getElevationAlongPath(pr, elevationResults);
+
     //Now input that data. 
     var current_samples = 0;
     //Draw the chart.
@@ -164,7 +163,14 @@ function getElevations() {
         deferred2.resolve();
     });
     
-    $.when(deferred2).done(drawElevationChart);
+    $.when(deferred2).done(function () { drawElevationChart(); drawLegend(samplesPerDay)});
+}
+
+
+function elevatorWrapper(pr, elevationResults) {
+    return function () {
+        elevator.getElevationAlongPath(pr, elevationResults);
+    };
 }
 
 function drawElevationChart() {
@@ -179,48 +185,71 @@ function drawElevationChart() {
 
 function elevationResults(results, status) {
     if (status != google.maps.ElevationStatus.OK) {
-        return;
+        return $.Deferred().reject;
     }
     var elevations = results;
+    var next_call = array_of_requests.shift();
     console.log('returned value 0 is ' + (elevations[0].elevation * metersToFeet));
     
     for (var i = 0; i < results.length; i++) {
         elevationPath.push(elevations[i].elevation*metersToFeet);
     }
-    if (def[0]) {
-        def[0].resolve();
-        def.splice(0, 1);
+    if (next_call) {
+        next_call();
     }
-    if (!def[0]) {
+    else if (!next_call) {
         deferred1.resolve();
     }
-    return;
 }
 
-function drawLegend() {
-
-    var totDays = dayNumber + 1;
-    var spacing = 10;
-    if (totDays < 5) {
-        spacing = 20;
+function calcDailyElevGainsLosses(samplesPerDay) {
+    var eleGains = [];
+    var eleLoss = [];
+    var counter = 1;
+    for (var i = 0; i < samplesPerDay.length; i++) {
+        eleGains[i] = 0;
+        eleLoss[i] = 0;
+        for (var j = counter; j < samplesPerDay[i] + counter; j++) {
+            if (elevationPath[j] > elevationPath[j - 1]) {
+                eleGains[i] += (elevationPath[j] - elevationPath[j-1]);
+            }
+            if (elevationPath[j] < elevationPath[j - 1]) {
+                eleLoss[i] += (elevationPath[j-1] - elevationPath[j]);
+            }
+        }
+        eleGains[i] = Math.round(eleGains[i]);
+        eleLoss[i] = Math.round(eleLoss[i]);
+        counter += samplesPerDay[i];
     }
+    var gainLoss = [eleGains, eleLoss];
+    return gainLoss;
+    
+}
+
+function drawLegend(samplesPerDay) {
+    var gainLoss = calcDailyElevGainsLosses(samplesPerDay);
+    var totDays = dayNumber + 1;
+    var spacing = 80/totDays;
     var legend_canvas = document.getElementById("LegendCanvas");
     var legend_context = legend_canvas.getContext("2d");
     legend_context.fillStyle = 'black';
-    legend_context.fillText("Legend", 30, 12);
+    //legend_context.fillText("Legend", 10, 12);
+    legend_context.fillText("Dist (mi)", 50, 12);
+    legend_context.fillText("Elev Gain/Loss (ft)", 100, 12);
     legend_context.moveTo(0, 15);
-    legend_context.lineTo(100, 15);
+    legend_context.lineTo(200, 15);
     legend_context.strokeStyle = 'black';
     legend_context.stroke();
     //Add key, lines and mileage per day
     for (var i = 1; i <= totDays; i++) {
-        var round = pathDistance[i-1]
-        round = round*100;
-        round = Math.round(round);
-        round = round/100;
+        var dist = pathDistance[i-1]
+        dist = dist * 100;
+        dist = Math.round(dist);
+        dist = dist / 100;
         legend_context.fillStyle = 'black';
         legend_context.fillText("Day " + i + ":", 5, 27 + (i - 1) * spacing);
-        legend_context.fillText(round.toFixed(2) + ' mi', 60, 27 + (i - 1) * spacing);
+        legend_context.fillText(gainLoss[0][i - 1] + " / " + gainLoss[1][i - 1], 110, 27 + (i - 1) * spacing);
+        legend_context.fillText(dist.toFixed(2), 60, 27 + (i - 1) * spacing);
         legend_context.fillStyle = current_color[i - 1];
         legend_context.fillRect(40, 22 + (i - 1) * spacing, 17, 4);
     }
@@ -230,7 +259,7 @@ function addLegendCanvas() {
     var canvas = document.createElement('canvas');
     div = document.getElementById('legend');
     canvas.id = "LegendCanvas";
-    canvas.width = 100;
+    canvas.width = 200;
     canvas.height = 100;
     canvas.style.zIndex = 8;
     canvas.style.position = "absolute";
