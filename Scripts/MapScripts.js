@@ -304,7 +304,7 @@ function navigation() {
 function initialize() {
     var mapOptions = {
         zoom: 12,
-        center: new google.maps.LatLng(40.293275, -105.762661),
+        center: new google.maps.LatLng(40.278478, -105.753048),
         mapTypeId: 'terrain'
     }
 
