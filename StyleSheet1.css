@@ -80,6 +80,12 @@ img { max-width: none; }
     padding: 4px 7px 2px 4px;
     float: right;
 }
+
+#legend {
+    height: 100px;
+    width: 200px;
+    background: white;
+}
 /*
 footer {
 	position:absolute;

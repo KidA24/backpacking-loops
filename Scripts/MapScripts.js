@@ -9,7 +9,8 @@ var infowindow = new google.maps.InfoWindow();
 var polyline = new Array();
 var dayNumber = 0;
 var def = new Array();
-var current_color = ['red', 'blue', 'orange', 'purple', 'yellow', 'black', 'green' ];
+var current_color = ['red', 'mediumvioletred', 'orange', 'purple', 'yellow', 'black', 'orangered'];
+//data variable used for the elevation chart
 var data = new google.visualization.DataTable();
 data.addColumn('string', 'Sample');
 data.addColumn('number', 'Elevation');
@@ -23,6 +24,8 @@ var deferred2;
 var trailPath = new Array([]);
 var pathDistance = new Array();
 var elevationPath = new Array();
+var mapMarkers = new Array();
+var legendPosition;
 // Load the Visualization API and the columnchart package.
 google.load('visualization', '1', { packages: ['corechart'] });
 var metersToFeet = 3.28083989501312;
@@ -58,20 +61,48 @@ function openNavigationLink(id) {
         case 'flattopMtn':
             flatTopMountainWest();
             return;
-        case 'numbertwo':
-            chart.clearChart();
+        case 'eastLakeLoop':
+            easternLakesLoop();
+            return;
+        case 'eastLakeLoop2':
+            easternLakesLoop2Fn();
             return;
     }
 }
 
-function comingSoon() {
+// Removes the markers from the map, but keeps them in the array.
+function clearMarkers() {
+    setAllMap(null);
+}
+
+// Shows any markers currently in the array.
+function showMarkers() {
+    setAllMap(map);
+}
+
+// Deletes all markers in the array by removing references to them.
+function deleteMarkers() {
+    clearMarkers();
+    mapMarkers = [];
+}
+
+function setAllMap(map) {
+    for (var i = 0; i < mapMarkers.length; i++) {
+        mapMarkers[i].setMap(map);
+    }
 }
 
 function clearData() {
     chart.clearChart();
     trailPath.length = 0;
+    for (var i = 0; i < polyline.length; i++){
+        polyline[i].setMap(null);
+    }
+    //clearMarkers();
+    deleteMarkers();
     polyline.length = 0;
     elevationPath.length = 0;
+    pathDistance.length = 0;
     $('#writtencontent').empty();
     // Create an ElevationService.
     elevator = new google.maps.ElevationService();
@@ -81,33 +112,104 @@ function clearData() {
     data.addColumn('number', 'Elevation');
     data.addColumn({ type: 'string', role: 'style' });
     data.addColumn({ type: 'string', role: 'annotation' });
-
+    //clear legend
+    if(document.getElementById("LegendCanvas")){
+        var legend_canvas = document.getElementById("LegendCanvas");
+        var legend_context = legend_canvas.getContext("2d");
+        legend_context.clearRect(0, 0, 200, 100);
+    }
     dayNumber = 0;
 }
 
 function flatTopMountainWest() {
     // Reset Data and path the currently selected data
     clearData();
-    dayNumber = 0;
-    var pathArray = [flatTopDayOne, flatTopDayTwoOptional, flatTopDayTwo, flatTopDayThreeOpt2, flatTopDayFourOpt2];
+    var pathArray = [flatTop.mainDayOne, flatTop.mainDayTwoOptional, flatTop.mainDayTwo, flatTop.mainDayThree, flatTop.mainDayFour];
     //calculate the daily distance of the route:
     deferredPaths = $.Deferred();
     calcTotalDistance(pathArray);
     inputPath(pathArray);
     dayNumber = 4;
+    moveMapLegend(google.maps.ControlPosition.RIGHT_BOTTOM);
     // Draw the map lines
     $.when(deferred1).done(drawPolyline());
     //Add the Markers
-    for (var i = 0; i < flatTopMarkers.length; i++) {
-        flatTopMarkers[i].setMap(map);
+    for (var i = 0; i < flatTop.markers.length; i++) {
+        mapMarkers.push(flatTop.markers[i]);
+        mapMarkers[i].setMap(map);
     }
-
+    //pan the map
+    map.panTo(new google.maps.LatLng(40.278478, -105.753048));
+    
     //Add the Map Legend
     $('#legend').css({ "height": "100px", "width": "200px", "background": "white" });
     addLegendCanvas();
     getElevations();
+    for (var i = 0; i < flatTop.mainContent.length; i++) {
+        $('#writtencontent').append(flatTop.mainContent[i]);
+    }
+    $('#writtencontent').css('padding', '4px');
+}
+
+function easternLakesLoop() {
+    // Reset Data and path the currently selected data
+    clearData();
+    dayNumber = 0;
+    var pathArray = [easternLakesLoop_Day1, easternLakesLoop_Day2, easternLakesLoop_Day3, easternLakesLoop_Day4];
+    //calculate the daily distance of the route:
+    deferredPaths = $.Deferred();
+    calcTotalDistance(pathArray);
+    moveMapLegend(google.maps.ControlPosition.LEFT_BOTTOM);
+    inputPath(pathArray);
+    dayNumber = 3;
+    // Draw the map lines
+    $.when(deferred1).done(drawPolyline());
+    //Add the Markers
+    for (var i = 0; i < easternLakesLoop_Markers.length; i++) {
+        mapMarkers.push(easternLakesLoop_Markers[i]);
+        mapMarkers[i].setMap(map);
+    }
+
+    //recenter the map
+    map.panTo(new google.maps.LatLng(40.318279, -105.634728));
+    //Add the Map Legend
+    //$('#legend').css({ "height": "100px", "width": "200px", "background": "white" });
+    addLegendCanvas();
+    getElevations();
+    /* TODO: Update Content!!
     $('#writtencontent').append(flatTopContent);
     $('#writtencontent').css('padding', '4px');
+*/
+}
+
+function easternLakesLoop2Fn() {
+    // Reset Data and path the currently selected data
+    clearData();
+    var pathArray = [easternLakesLoop2.DayOne, easternLakesLoop2.DayTwo, easternLakesLoop2.DayThree, easternLakesLoop2.DayFour, easternLakesLoop2.DayFive];
+    //calculate the daily distance of the route:
+    deferredPaths = $.Deferred();
+    calcTotalDistance(pathArray);
+    moveMapLegend(google.maps.ControlPosition.LEFT_BOTTOM);
+    inputPath(pathArray);
+    dayNumber = 4;
+    // Draw the map lines
+    $.when(deferred1).done(drawPolyline());
+    //Add the Markers
+    for (var i = 0; i < easternLakesLoop_Markers.length; i++) {
+        mapMarkers.push(easternLakesLoop_Markers[i]);
+        mapMarkers[i].setMap(map);
+    }
+
+    //recenter the map
+    map.panTo(new google.maps.LatLng(40.318279, -105.634728));
+    //Add the Map Legend
+    //$('#legend').css({ "height": "100px", "width": "200px", "background": "white" });
+    addLegendCanvas();
+    getElevations();
+    /* TODO: Update Content!!
+    $('#writtencontent').append(flatTopContent);
+    $('#writtencontent').css('padding', '4px');
+*/
 }
 
 //determines number of samples per path, and then deposits the results into an array of altitudes. 
@@ -223,7 +325,6 @@ function calcDailyElevGainsLosses(samplesPerDay) {
     }
     var gainLoss = [eleGains, eleLoss];
     return gainLoss;
-    
 }
 
 function drawLegend(samplesPerDay) {
@@ -233,7 +334,6 @@ function drawLegend(samplesPerDay) {
     var legend_canvas = document.getElementById("LegendCanvas");
     var legend_context = legend_canvas.getContext("2d");
     legend_context.fillStyle = 'black';
-    //legend_context.fillText("Legend", 10, 12);
     legend_context.fillText("Dist (mi)", 50, 12);
     legend_context.fillText("Elev Gain/Loss (ft)", 100, 12);
     legend_context.moveTo(0, 15);
@@ -256,15 +356,19 @@ function drawLegend(samplesPerDay) {
 }
 
 function addLegendCanvas() {
+    var div = document.getElementById('legend');
+    if(div.firstChild) 
+        return;
+
     var canvas = document.createElement('canvas');
-    div = document.getElementById('legend');
+    
     canvas.id = "LegendCanvas";
     canvas.width = 200;
     canvas.height = 100;
     canvas.style.zIndex = 8;
     canvas.style.position = "absolute";
     canvas.style.border = "1px solid";
-    div.appendChild(canvas)
+    div.appendChild(canvas);
 }
 
 function getDistanceFromLatLonInMi(lat1, lon1, lat2, lon2) {
@@ -312,12 +416,34 @@ function initialize() {
 
     // Create a new chart in the elevation_chart DIV.
     chart = new google.visualization.LineChart(document.getElementById('elevation_chart'));
-    
     //add the legend
-    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('legend'));
-
-    flatTopMountainWest();
+    easternLakesLoop2Fn();
 }
+
+function moveMapLegend(newPosition) {
+    if (!legendPosition) {
+        map.controls[newPosition].push(document.getElementById('legend'));
+        legendPosition = newPosition;
+        return;
+    }
+        //don't do any work if it is already in the right spot
+    else if (legendPosition == newPosition){
+        return;
+    }
+        //if they are not the same position, remove old one and re add to the new position
+    else if (legendPosition != newPosition) {
+        var div = document.getElementById('legend');
+        var index = map.controls[legendPosition].indexOf(div);
+        if (index > -1) {
+            map.controls[legendPosition].pop();
+        }
+        map.controls[newPosition].push(div);
+        legendPosition = newPosition;
+        return;
+    }
+}
+    
+
 
 //takes in an array of path's, and then calculates the total distance of the path
 function calcTotalDistance(path) {
