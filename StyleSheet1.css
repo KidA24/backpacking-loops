@@ -10,7 +10,7 @@ linear-gradient(120deg, rgba(0,0,0,.1) 25%, transparent 25%, transparent 75%, rg
 background-size: 70px 120px;
 }
 
-#wrapper {
+.container {
     position:absolute;
     top:0;
     bottom:0;
@@ -18,38 +18,92 @@ background-size: 70px 120px;
     right:0;
     overflow:hidden;
     z-index:-1;
-	width:1000px; margin:auto;
+	width:1200px; margin:auto;
     background-color: #B2C2B2;
     background-color:rgba(1, 40, 2, 0.4);
+    height: 100%;
 }
 
-header {
-	background-color:#003300;
-    color: #DCDCDC;
-    margin-left: 15px;
-    width: 968px;
-    height: 40px;
-	border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-    text-indent: 100px;
-    line-height: 40px;
-    margin-bottom: 4px;
-    }
-
-
-
+.contentWrapper {
+    position: absolute;
+    height: 100%;
+    width:100%;
+}
 #leftcolumn {
-    margin-left:15px;
-    float: left;
-    display:inline-block;
-    width: 240px;
     background-color:#003300;
     color: #DCDCDC;  
 	height:100%;
-    z-index:5;
+}
+
+
+#maincontent {
+    background-color:#003300;
+    color: #DCDCDC;
+    height: 100%;
+}
+
+#topbar {
+    background-color:#003300;
+    color: #DCDCDC;
+    width: 100%;
+    height: 100px;
+}
+
+/*nav-tabs and nav-pills settings*/
+.nav-tabs > li {
+    float:none;
+    display:inline-block;
+    *display:inline; /* ie7 fix */
+     zoom:1; /* hasLayout ie7 trigger */
+}
+/* proper way to do the awesome stuff */
+.nav-pills > li.active > a {
+    background-color: red;
+    color: black;
+    border-radius: 20px;
+}
+.nav-pills > li > a:hover {
+    background-color: red;
+}
+
+.nav-tabs, .nav-pills {
+    text-align:center;
+}
+
+.nav-tabs > li.content {
+    width: 100px;
+}
+
+.nav-tabs > li.active > a{
+    background-color:#4D944D;
+    border: none;
+    border-bottom-color: #4D944D;
+    color: #DCDCDC;
+}
+
+.nav-tabs > li > a{
+    background-color:#003300;
+    border: none;
+    border-bottom-color: #003300;
+    color: #DCDCDC;
+}
+
+.nav-tabs > li.active > a:hover, .nav-tabs > li > a:hover {
+    background-color:#8CC78C;
+    border: none;
+    border-bottom-color: #003300;
+    color: #DCDCDC;
+}
+
+nav-tabs > li.divider {
+    width:5px;
 }
 
 li, ul { cursor: default;
+}
+
+ul.RMNP {
+    display: none;
 }
 
 #elevation_chart {
@@ -64,17 +118,6 @@ li, ul { cursor: default;
 }
 img { max-width: none; }
 
-#maincontent {
-    background-color:#003300;
-    color: #DCDCDC;
-    display:inline-block;
-    width: 724px;
-	height:99%;
-    margin-left: 4px;
-    margin-right: 4px;
-    float: left;
-    overflow: auto;
-}
 #writtencontent {
     width: 200px;
     padding: 4px 7px 2px 4px;
@@ -86,15 +129,3 @@ img { max-width: none; }
     width: 200px;
     background: white;
 }
-/*
-footer {
-	position:absolute;
-	bottom:0;
-	left:0;
-	width:100%;
-    background-color: purple;
-    margin-left: 15px;
-    width: 969px;
-    background-color:#003300;
-    color: #DCDCDC;
-} */

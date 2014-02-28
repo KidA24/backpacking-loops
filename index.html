@@ -2,32 +2,83 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <link type="text/css" rel="stylesheet" href="StyleSheet1.css"/>
     <script src="Scripts/jquery-2.0.3.js" type="text/javascript"></script>
+    <link href="packages/bootstrap.3.0.3/content/Content/bootstrap.css" rel="stylesheet" />
+    <link href="packages/bootstrap.3.0.3/content/Content/bootstrap-theme.css" rel="stylesheet" />
+    <script src="packages/bootstrap.3.0.3/content/Scripts/bootstrap.js"></script>
     <script src="https://www.google.com/jsapi"></script>
     <script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD2rphRuGXXi8dbWPgs4yOBtEqDmb5wWw4&sensor=false">
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD2rphRuGXXi8dbWPgs4yOBtEqDmb5wWw4&sensor=false">
     </script>
     <script>google.load('visualization', '1', { packages: ['corechart'] });</script>
     <meta charset="utf-8" />
-    <title></title>
+    <title>Get ye to the Wilderness</title>
 </head>
 <body>
-	<div id="wrapper">
-    	<header><h2>Header</h2>
-    	</header>
-       	<div id="leftcolumn"></div>
-       	<div id="maincontent">
-               <div id="maps"></div>
-               <div id="writtencontent"></div>
-               <div id="legend"></div>
-               <div id="elevation_chart"></div>
-               
-       	</div>
-      <!-- 	<footer><p>footer</p></footer> -->
-    </div>  
+    <div class="container fill">
+        <div class="row">
+            <div class="col-lg-12" id="topbar">
+                <nav class="navbar navbar-fixed-top" role="navigation">
+                    <ul class="nav nav-tabs nav-tabs-justified">
+                        <li class="active content" id="RMNP"><a href="#">RMNP</a></li>
+                        <li class="divider"></li>
+                        <li class="content" id="glac"><a href="#">Glacier</a></li>
+                        <li class="divider"></li>
+                        <li class="content"><a href="#">Wisconsin</a></li>
+                        <li class="divider"></li>
+                        <li class="content"><a href="#"></a></li>
+                        <li class="divider"></li>
+                        <li class="content"><a href="#">About</a></li>
+                    </ul>
+                </nav>
+                </div>
+            </div>
+        <div class="row fill">
+            <div class="contentWrapper">
+                <div class="col-lg-3 fill" id="leftcolumn">
+                    <div class="col-lg-12" id="rmnp_wrapper" style="display:block">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li class="active"><a href="#">East Mtns</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">East Mtns 2</a></li>
+                        <li class="divider"></li>
+                        <li id="flatTop"><a href="#">Flattop Mountain</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">Test Link</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">About</a></li>
+                    </ul>
+                </div>
+                    <div id="glacier_stuff" style="display:none">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li class="active"><a href="#">GLACIER!!!</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">Glacier 2</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">Glacier 3</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">Glacier 4</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">Glacier 5</a></li>
+                    </ul>
+                </div>
+
+                </div>
+                <div class="col-lg-9 fill" id="maincontent">
+                    <div class="row fill">
+                        <div class="col-lg-8 fill" id="maincontent-maps">main-map
+                            <div class="col-lg-12 fill" id="elevation_chart">elev chart</div>
+                        </div>
+                        <div class="col-lg-4 fill" id="maincontent-text">main-text
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="HTML/RMNP/rmnpGPS.js"></script>
     <script src="Scripts/MapScripts.js" type="text/javascript"></script>
-    
+    <link type="text/css" rel="stylesheet" href="StyleSheet1.css" />
+
 </body>
 </html>

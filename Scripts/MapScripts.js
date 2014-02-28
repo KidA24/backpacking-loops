@@ -9,7 +9,7 @@ var infowindow = new google.maps.InfoWindow();
 var polyline = new Array();
 var dayNumber = 0;
 var def = new Array();
-var current_color = ['red', 'mediumvioletred', 'orange', 'purple', 'yellow', 'black', 'orangered'];
+var current_color = ['red', 'black', 'orange', 'purple', 'yellow', 'mediumvioletred', 'orangered'];
 //data variable used for the elevation chart
 var data = new google.visualization.DataTable();
 data.addColumn('string', 'Sample');
@@ -56,7 +56,7 @@ function togglevisible(id) {
 
 //handles the navigation of the actual links
 function openNavigationLink(id) {
-    $('#maps').append(id);
+    $('#maincontent-maps').append(id);
     switch (id) {
         case 'flattopMtn':
             flatTopMountainWest();
@@ -412,7 +412,7 @@ function initialize() {
         mapTypeId: 'terrain'
     }
 
-    map = new google.maps.Map(document.getElementById('maps'), mapOptions);
+    map = new google.maps.Map(document.getElementById('maincontent-maps'), mapOptions);
 
     // Create a new chart in the elevation_chart DIV.
     chart = new google.visualization.LineChart(document.getElementById('elevation_chart'));
@@ -467,7 +467,7 @@ function drawPolyline() {
         polyline[i] = new google.maps.Polyline({
             path: trailPath[i],
             strokeColor: current_color[i],
-            strokeWeight: 2,
+            strokeWeight: dayNumber+3-i,
             strokeOpacity: 0.9,
             map: map
         });
@@ -475,11 +475,21 @@ function drawPolyline() {
 }
 
 $(document).ready(function () {
-    $('#leftcolumn').load('HTML/LeftColumn.html');
-    $(document).on('click', '.RockyMtn', navigation);
-    $(document).on('click', '.GlacierNP-sub', navigation);
-    $(document).on('click', '.topdropdown', function (e) {
-        if ($(this).is($(e.target))) { topdropdown($(this)); };
+    $('li.content').click(function () {
+        $('li.active').removeClass("active");
+        $(this).addClass('active');
+    });
+    $('#RMNP').click(function () {
+        $('#leftcolumn> div').hide();
+        $('#rmnp_wrapper').show();
+    });
+    $('#glac').click(function () {
+        $('#leftcolumn > div').hide();
+        $('#glacier_stuff').show();
+    });
+    $('#flatTop').click(function () {
+        $('.body').append('<script src="HTML/RMNP/flatTop.js"></script>');
+        flatTopMountainWest();
     });
 });
 
