@@ -108,12 +108,10 @@ ul.RMNP {
 
 #elevation_chart {
     height: 250px;
-    width: 500px;
     float: left;
 }
-#maps {
+#maincontent-maps {
     height: 500px;
-    width: 500px;
     float: left;
 }
 img { max-width: none; }

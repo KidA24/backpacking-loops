@@ -49,7 +49,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "backpacking-loops", ".", "{
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "50230"
+		VWDPort = "10431"
 	EndProjectSection
 EndProject
 Global

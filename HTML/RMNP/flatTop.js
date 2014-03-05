@@ -1,5 +1,32 @@
 ﻿var flatTop = [];
 
+function flatTopMountainWest() {
+    // Reset Data and path the currently selected data
+    clearData();
+    var pathArray = [flatTop.mainDayOne, flatTop.mainDayTwoOptional, flatTop.mainDayTwo, flatTop.mainDayThree, flatTop.mainDayFour];
+    //calculate the daily distance of the route:
+    deferredPaths = $.Deferred();
+    calcTotalDistance(pathArray);
+    inputPath(pathArray);
+    dayNumber = 4;
+    moveMapLegend(google.maps.ControlPosition.RIGHT_BOTTOM);
+    // Draw the map lines
+    $.when(deferred1).done(drawPolyline());
+    //Add the Markers
+    for (var i = 0; i < flatTop.markers.length; i++) {
+        mapMarkers.push(flatTop.markers[i]);
+        mapMarkers[i].setMap(map);
+    }
+    //pan the map
+    map.panTo(new google.maps.LatLng(40.278478, -105.753048));
+
+    //Add the Map Legend
+    $('#legend').css({ "height": "100px", "width": "200px", "background": "white" });
+    addLegendCanvas();
+    getElevations();
+    addMainContent(flatTop.mainContent);
+}
+
 flatTop["markers"] = new Array();
 
 flatTop.markers.push(new google.maps.Marker({
@@ -26,41 +53,11 @@ flatTop.markers.push(new google.maps.Marker({
 }));
 
 flatTop['mainContent'] = new Array();
-flatTop.mainContent.push('<p>This will be my inaugaral hike into the backcountry in Rocky Mountain National Park, I am throughly excited. My current plan involves 4 days of hiking with an optional short day hike for the second day of the trip. However this trip could easily be shortened to 3 days for those weekend expiditioners.</p><hr>');
+flatTop.mainContent.push('<p>This hike is designed to hike along a good section of the Continental Divide Trail, taking in Flattop Mountain with a few optional day hikes. This trip could be shortened to 2 or 3 days, for the fitter & more adventurous.</p><hr>');
 flatTop.mainContent.push('<b>Trip Overview: </b><p /><b>Day 1: </b>Get ye to the back country. Slow incline up to the Pine Marten campsite.<p /> ');
 flatTop.mainContent.push('<b>Day 2:</b> Optional day hike up to Lake Nanita, followed by a short backpack to the July Campsite. (note: Day 2 and Day 3 on the map are combined in this case) <p /><b>');
 flatTop.mainContent.push('Day 3: </b>Up to summit Flattop Mountain bright and early, and then the long walk down to Granite Falls Campsite.<p /><b>');
 flatTop.mainContent.push('Day 4:</b> Wander the Meadows for a slow decent back to your car, your shower awaits! <br>');
-
-
-var easternLakesLoop_Markers = new Array();
-
-easternLakesLoop_Markers.push(new google.maps.Marker({
-    position: new google.maps.LatLng(40.271896, -105.556557),
-    title: "Start/Finish\nLong's Trail Lot"
-}));
-
-
-easternLakesLoop_Markers.push(new google.maps.Marker({
-    position: new google.maps.LatLng(40.291328, -105.616905),
-    icon: campSiteDownLeft,
-    title: "Campsite 1"
-}));
-
-
-easternLakesLoop_Markers.push(new google.maps.Marker({
-    position: new google.maps.LatLng(40.330105, -105.684044),
-    icon: campSiteUp,
-    title: "Campsite\nNight Two"
-}));
-
-
-easternLakesLoop_Markers.push(new google.maps.Marker({
-    position: new google.maps.LatLng(40.312363, -105.598885),
-    icon: campSiteUp,
-    title: "Campsite\n Night Three"
-}));
-
 
 flatTop["mainDayOne"] = [new google.maps.LatLng(40.254219, -105.815392),
 new google.maps.LatLng(40.254768, -105.815628),

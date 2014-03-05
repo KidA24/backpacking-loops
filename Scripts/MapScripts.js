@@ -1,75 +1,5 @@
 ﻿/// <reference path="~/Scripts/jquery-2.0.3.js" />
 
-
-// Create an ElevationService.
-var elevator = new google.maps.ElevationService();
-var map;
-var chart;
-var infowindow = new google.maps.InfoWindow();
-var polyline = new Array();
-var dayNumber = 0;
-var def = new Array();
-var current_color = ['red', 'black', 'orange', 'purple', 'yellow', 'mediumvioletred', 'orangered'];
-//data variable used for the elevation chart
-var data = new google.visualization.DataTable();
-data.addColumn('string', 'Sample');
-data.addColumn('number', 'Elevation');
-data.addColumn({ type: 'string', role: 'style' });
-var testvar = 'initialize';
-var pathReq = [];
-var array_of_requests = [];
-var deferred1;
-var deferred2;
-//used to store the individual days/paths for the trip
-var trailPath = new Array([]);
-var pathDistance = new Array();
-var elevationPath = new Array();
-var mapMarkers = new Array();
-var legendPosition;
-// Load the Visualization API and the columnchart package.
-google.load('visualization', '1', { packages: ['corechart'] });
-var metersToFeet = 3.28083989501312;
-
-//handles the toggling of the drop downs 
-function togglevisible(id) {
-    switch (id) {
-        case 'GlacierNP':
-            //$('.GlacierNP-sub').toggle();
-            return;
-        case 'RMNP':
-            $('.RockyMtn').toggle();
-            return;
-        case 'Wisconsin':
-            //$('.Wisco').toggle();
-            return;
-        case '6plus':
-            //$('plus6').toggle();
-            return;
-        case '3to5':
-            //$('5to3').toggle();
-            return;
-        case '1or2':
-            //$('2or1').toggle();
-            return;
-    }
-}
-
-//handles the navigation of the actual links
-function openNavigationLink(id) {
-    $('#maincontent-maps').append(id);
-    switch (id) {
-        case 'flattopMtn':
-            flatTopMountainWest();
-            return;
-        case 'eastLakeLoop':
-            easternLakesLoop();
-            return;
-        case 'eastLakeLoop2':
-            easternLakesLoop2Fn();
-            return;
-    }
-}
-
 // Removes the markers from the map, but keeps them in the array.
 function clearMarkers() {
     setAllMap(null);
@@ -121,41 +51,18 @@ function clearData() {
     dayNumber = 0;
 }
 
-function flatTopMountainWest() {
-    // Reset Data and path the currently selected data
-    clearData();
-    var pathArray = [flatTop.mainDayOne, flatTop.mainDayTwoOptional, flatTop.mainDayTwo, flatTop.mainDayThree, flatTop.mainDayFour];
-    //calculate the daily distance of the route:
-    deferredPaths = $.Deferred();
-    calcTotalDistance(pathArray);
-    inputPath(pathArray);
-    dayNumber = 4;
-    moveMapLegend(google.maps.ControlPosition.RIGHT_BOTTOM);
-    // Draw the map lines
-    $.when(deferred1).done(drawPolyline());
-    //Add the Markers
-    for (var i = 0; i < flatTop.markers.length; i++) {
-        mapMarkers.push(flatTop.markers[i]);
-        mapMarkers[i].setMap(map);
+function addMainContent(content) {
+    $('#maincontent-text').empty();
+    for (var i = 0; i < content.length; i++) {
+        $('#maincontent-text').append(content[i]);
     }
-    //pan the map
-    map.panTo(new google.maps.LatLng(40.278478, -105.753048));
-    
-    //Add the Map Legend
-    $('#legend').css({ "height": "100px", "width": "200px", "background": "white" });
-    addLegendCanvas();
-    getElevations();
-    for (var i = 0; i < flatTop.mainContent.length; i++) {
-        $('#writtencontent').append(flatTop.mainContent[i]);
-    }
-    $('#writtencontent').css('padding', '4px');
 }
 
-function easternLakesLoop() {
+function easternLakesLoopFn() {
     // Reset Data and path the currently selected data
     clearData();
     dayNumber = 0;
-    var pathArray = [easternLakesLoop_Day1, easternLakesLoop_Day2, easternLakesLoop_Day3, easternLakesLoop_Day4];
+    var pathArray = [easternLakesLoop.mainDayOne, easternLakesLoop.mainDayTwo, easternLakesLoop.mainDayThree, easternLakesLoop.mainDayFour];
     //calculate the daily distance of the route:
     deferredPaths = $.Deferred();
     calcTotalDistance(pathArray);
@@ -165,8 +72,8 @@ function easternLakesLoop() {
     // Draw the map lines
     $.when(deferred1).done(drawPolyline());
     //Add the Markers
-    for (var i = 0; i < easternLakesLoop_Markers.length; i++) {
-        mapMarkers.push(easternLakesLoop_Markers[i]);
+    for (var i = 0; i < easternLakesLoop.markers.length; i++) {
+        mapMarkers.push(easternLakesLoop.markers[i]);
         mapMarkers[i].setMap(map);
     }
 
@@ -176,16 +83,13 @@ function easternLakesLoop() {
     //$('#legend').css({ "height": "100px", "width": "200px", "background": "white" });
     addLegendCanvas();
     getElevations();
-    /* TODO: Update Content!!
-    $('#writtencontent').append(flatTopContent);
-    $('#writtencontent').css('padding', '4px');
-*/
+    addMainContent(easternLakesLoop.mainContent);
 }
 
 function easternLakesLoop2Fn() {
     // Reset Data and path the currently selected data
     clearData();
-    var pathArray = [easternLakesLoop2.DayOne, easternLakesLoop2.DayTwo, easternLakesLoop2.DayThree, easternLakesLoop2.DayFour, easternLakesLoop2.DayFive];
+    var pathArray = [easternLakesLoop2.mainDayOne, easternLakesLoop2.mainDayTwo, easternLakesLoop2.mainDayThree, easternLakesLoop2.mainDayFour, easternLakesLoop2.mainDayFive];
     //calculate the daily distance of the route:
     deferredPaths = $.Deferred();
     calcTotalDistance(pathArray);
@@ -195,21 +99,18 @@ function easternLakesLoop2Fn() {
     // Draw the map lines
     $.when(deferred1).done(drawPolyline());
     //Add the Markers
-    for (var i = 0; i < easternLakesLoop_Markers.length; i++) {
-        mapMarkers.push(easternLakesLoop_Markers[i]);
+    for (var i = 0; i < easternLakesLoop2.markers.length; i++) {
+        mapMarkers.push(easternLakesLoop2.markers[i]);
         mapMarkers[i].setMap(map);
     }
 
     //recenter the map
-    map.panTo(new google.maps.LatLng(40.318279, -105.634728));
+    map.panTo(new google.maps.LatLng(40.304142, -105.661196));
     //Add the Map Legend
     //$('#legend').css({ "height": "100px", "width": "200px", "background": "white" });
     addLegendCanvas();
     getElevations();
-    /* TODO: Update Content!!
-    $('#writtencontent').append(flatTopContent);
-    $('#writtencontent').css('padding', '4px');
-*/
+    addMainContent(easternLakesLoop2.mainContent);
 }
 
 //determines number of samples per path, and then deposits the results into an array of altitudes. 
@@ -395,31 +296,6 @@ function getid(selectedItem) {
     }
 }
 
-function topdropdown(that) {
-    var id = getid(that);
-    togglevisible(id);
-}
-
-function navigation() {
-    var id = getid(this);
-    openNavigationLink(id);
-}
-
-function initialize() {
-    var mapOptions = {
-        zoom: 12,
-        center: new google.maps.LatLng(40.278478, -105.753048),
-        mapTypeId: 'terrain'
-    }
-
-    map = new google.maps.Map(document.getElementById('maincontent-maps'), mapOptions);
-
-    // Create a new chart in the elevation_chart DIV.
-    chart = new google.visualization.LineChart(document.getElementById('elevation_chart'));
-    //add the legend
-    easternLakesLoop2Fn();
-}
-
 function moveMapLegend(newPosition) {
     if (!legendPosition) {
         map.controls[newPosition].push(document.getElementById('legend'));
@@ -473,26 +349,5 @@ function drawPolyline() {
         });
     }
 }
-
-$(document).ready(function () {
-    $('li.content').click(function () {
-        $('li.active').removeClass("active");
-        $(this).addClass('active');
-    });
-    $('#RMNP').click(function () {
-        $('#leftcolumn> div').hide();
-        $('#rmnp_wrapper').show();
-    });
-    $('#glac').click(function () {
-        $('#leftcolumn > div').hide();
-        $('#glacier_stuff').show();
-    });
-    $('#flatTop').click(function () {
-        $('.body').append('<script src="HTML/RMNP/flatTop.js"></script>');
-        flatTopMountainWest();
-    });
-});
-
-$(document).load(initialize());
 
 
